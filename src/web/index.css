@@ -3745,52 +3745,120 @@ textarea {
     #050811;
 }
 
-/* Glowing decorative orbs in background */
-.login-shell::before,
+/* Floating premium animated blobs in background */
+.login-bg-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(140px);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.6;
+  transition: all 0.5s ease;
+}
+
+[data-theme="dark"] .login-bg-blob {
+  opacity: 0.45;
+}
+
+.blob-1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.28) 0%, rgba(139, 92, 246, 0.05) 70%);
+  top: -10%;
+  left: -5%;
+  animation: cosmic-drift-1 25s infinite alternate ease-in-out;
+}
+
+.blob-2 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.22) 0%, rgba(99, 102, 241, 0.05) 70%);
+  bottom: -15%;
+  right: -5%;
+  animation: cosmic-drift-2 30s infinite alternate ease-in-out;
+}
+
+.blob-3 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.18) 0%, rgba(20, 184, 166, 0.05) 70%);
+  top: 40%;
+  left: 50%;
+  animation: cosmic-drift-3 28s infinite alternate ease-in-out;
+}
+
+.blob-4 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.12) 0%, rgba(236, 72, 153, 0.05) 70%);
+  bottom: 10%;
+  left: 10%;
+  animation: cosmic-drift-4 22s infinite alternate ease-in-out;
+}
+
+[data-theme="dark"] .blob-1 {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+}
+[data-theme="dark"] .blob-2 {
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%);
+}
+[data-theme="dark"] .blob-3 {
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%);
+}
+[data-theme="dark"] .blob-4 {
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.08) 0%, transparent 70%);
+}
+
+/* Interactive Mouse-following Spotlight */
 .login-shell::after {
   content: '';
   position: absolute;
-  border-radius: 50%;
-  filter: blur(120px);
+  inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.8;
+  background: radial-gradient(
+    700px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(99, 102, 241, 0.12),
+    transparent 80%
+  );
+  opacity: 0;
+  transition: opacity 0.8s ease;
 }
 
-.login-shell::before {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
-  top: -10%;
-  left: 20%;
-  animation: float-slow-1 25s infinite ease-in-out;
-}
-
-.login-shell::after {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, transparent 70%);
-  bottom: -15%;
-  right: 15%;
-  animation: float-slow-2 30s infinite ease-in-out;
-}
-
-[data-theme="dark"] .login-shell::before {
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+.login-shell.has-mouse::after {
+  opacity: 1;
 }
 
 [data-theme="dark"] .login-shell::after {
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%);
+  background: radial-gradient(
+    800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(168, 85, 247, 0.08),
+    transparent 80%
+  );
 }
 
-@keyframes float-slow-1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(60px, -40px) scale(1.15); }
+@keyframes cosmic-drift-1 {
+  0% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate3d(80px, 50px, 0) scale(1.15) rotate(180deg); }
+  100% { transform: translate3d(-40px, -60px, 0) scale(0.9) rotate(360deg); }
 }
 
-@keyframes float-slow-2 {
-  0%, 100% { transform: translate(0, 0) scale(1.1); }
-  50% { transform: translate(-50px, 60px) scale(0.9); }
+@keyframes cosmic-drift-2 {
+  0% { transform: translate3d(0, 0, 0) scale(1.1) rotate(360deg); }
+  50% { transform: translate3d(-100px, -80px, 0) scale(0.85) rotate(180deg); }
+  100% { transform: translate3d(60px, 40px, 0) scale(1.05) rotate(0deg); }
+}
+
+@keyframes cosmic-drift-3 {
+  0% { transform: translate3d(-50%, -50%, 0) scale(0.9) rotate(0deg); }
+  50% { transform: translate3d(calc(-50% - 60px), calc(-50% + 80px), 0) scale(1.2) rotate(-180deg); }
+  100% { transform: translate3d(calc(-50% + 40px), calc(-50% - 40px), 0) scale(0.95) rotate(-360deg); }
+}
+
+@keyframes cosmic-drift-4 {
+  0% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate3d(70px, -90px, 0) scale(1.1) rotate(90deg); }
+  100% { transform: translate3d(-50px, 30px, 0) scale(0.9) rotate(180deg); }
 }
 
 .login-surface {

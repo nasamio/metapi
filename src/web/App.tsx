@@ -1,4 +1,4 @@
-﻿import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
+import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
 import { ToastProvider, useToast } from './components/Toast.js';
 import SearchModal from './components/SearchModal.js';
@@ -132,6 +132,35 @@ export function Login({ onLogin, t }: { onLogin: (token: string) => void; t: (te
   const [token, setToken] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const shellRef = useRef<HTMLDivElement>(null);
+  const [hasMouse, setHasMouse] = useState(false);
+
+  useEffect(() => {
+    const shell = shellRef.current;
+    if (!shell) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = shell.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      shell.style.setProperty('--mouse-x', `${x}px`);
+      shell.style.setProperty('--mouse-y', `${y}px`);
+    };
+
+    const handleMouseEnter = () => setHasMouse(true);
+    const handleMouseLeave = () => setHasMouse(false);
+
+    shell.addEventListener('mousemove', handleMouseMove);
+    shell.addEventListener('mouseenter', handleMouseEnter);
+    shell.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      shell.removeEventListener('mousemove', handleMouseMove);
+      shell.removeEventListener('mouseenter', handleMouseEnter);
+      shell.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, []);
+
   const capabilityRows = [
     {
       title: t('统一代理网关'),
@@ -182,7 +211,11 @@ export function Login({ onLogin, t }: { onLogin: (token: string) => void; t: (te
   };
 
   return (
-    <div className="login-shell">
+    <div ref={shellRef} className={`login-shell ${hasMouse ? 'has-mouse' : ''}`}>
+      <div className="login-bg-blob blob-1"></div>
+      <div className="login-bg-blob blob-2"></div>
+      <div className="login-bg-blob blob-3"></div>
+      <div className="login-bg-blob blob-4"></div>
       <div className="login-surface animate-scale-in">
         <section className="login-brand-panel login-brand-panel-light">
           <div className="login-brand-header">
