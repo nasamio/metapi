@@ -1,13 +1,30 @@
-import {
+import * as zlib from 'node:zlib';
+
+const {
   brotliDecompressSync,
   createBrotliDecompress,
   createGunzip,
   createInflate,
-  createZstdDecompress,
   gunzipSync,
   inflateSync,
-  zstdDecompressSync,
-} from 'node:zlib';
+} = zlib;
+
+const createZstdDecompress = (zlib as any).createZstdDecompress;
+const zstdDecompressSync = (zlib as any).zstdDecompressSync;
+
+function safeZstdDecompressSync(buffer: Buffer): Buffer {
+  if (!zstdDecompressSync) {
+    throw new Error('zstd decompression is not supported on this Node.js version. Please upgrade Node.js to >= 22.8.0.');
+  }
+  return zstdDecompressSync(buffer);
+}
+
+function safeCreateZstdDecompress(): any {
+  if (!createZstdDecompress) {
+    throw new Error('zstd decompression is not supported on this Node.js version. Please upgrade Node.js to >= 22.8.0.');
+  }
+  return createZstdDecompress();
+}
 import { Readable } from 'node:stream';
 import type { ReadableStream as NodeReadableStream } from 'node:stream/web';
 import {
@@ -115,7 +132,7 @@ function decodeRuntimeResponseBuffer(buffer: Buffer, contentEncoding: string | n
 
   for (const encoding of encodings) {
     if (encoding === 'zstd') {
-      decoded = zstdDecompressSync(decoded);
+      decoded = safeZstdDecompressSync(decoded);
       continue;
     }
     if (encoding === 'br') {
@@ -146,7 +163,7 @@ function decodeRuntimeResponseStream(
 
   for (const encoding of encodings) {
     if (encoding === 'zstd') {
-      decoded = decoded.pipe(createZstdDecompress()) as Readable;
+      decoded = decoded.pipe(safeCreateZstdDecompress()) as Readable;
       continue;
     }
     if (encoding === 'br') {
